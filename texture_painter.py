@@ -73,8 +73,34 @@ def check_selection_rendermode():
         raise Exception(
             '\n\nRendering mode is currently: ' + bpy.context.scene.render.engine + '; this script only works with Blender Render')
 
+def create_plaque(prototype, offset):
+    prototype.select = True
+    bpy.ops.object.duplicate_move(
+        TRANSFORM_OT_translate={"value": offset})
+    new_plaque = bpy.context.selected_objects[0]
+    new_plaque.select = False
+    return new_plaque
+
+def get_offset(num, columns, spacing):
+    """
+    Return offset from prototype position.
+
+    :param num: Number of plaques
+    :param columns: Number of columns
+    :param spacing: Spacing between plaques (x, y)
+    :return: (x_offset, y_offset)
+    """
+
+    x_offset = (num % columns) * spacing[0]
+    y_offset = (num // columns) * spacing[1]
+
+    return (x_offset, y_offset)
 
 def go():
     print("Texture painter starting up.")
     check_selection_rendermode()
     # read_csv()
+
+    #pass in selected object
+    prototype = bpy.context.selected_objects[0]
+    create_plaque(prototype, (1, 0,0))
